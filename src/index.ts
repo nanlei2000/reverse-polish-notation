@@ -1,16 +1,39 @@
 const operators = ['+', '-', '*', '/'] as const;
 type Operators = (typeof operators)[number];
-const operatorPriorityMap = new Map<string, number>([
-  ['+', 1],
-  ['-', 1],
-  ['*', 2],
-  ['/', 2],
-]);
-const operatorFuncMap = new Map<string, (a: number, b: number) => number>([
-  ['+', (a, b) => a + b],
-  ['-', (a, b) => a - b],
-  ['*', (a, b) => a * b],
-  ['/', (a, b) => a / b],
+
+interface OperatorInfo {
+  priority: number;
+  func: (left: number, right: number) => number;
+}
+const operatorInfoMap = new Map<Operators, OperatorInfo>([
+  [
+    '+',
+    {
+      priority: 1,
+      func: (a, b) => a + b,
+    },
+  ],
+  [
+    '-',
+    {
+      priority: 1,
+      func: (a, b) => a - b,
+    },
+  ],
+  [
+    '*',
+    {
+      priority: 2,
+      func: (a, b) => a * b,
+    },
+  ],
+  [
+    '/',
+    {
+      priority: 2,
+      func: (a, b) => a / b,
+    },
+  ],
 ]);
 
 /**
@@ -48,7 +71,8 @@ function convert(str: string): string[] {
         if (
           operatorList.length === 0 ||
           topOperator === '(' ||
-          operatorPriorityMap.get(char)! > operatorPriorityMap.get(topOperator)!
+          operatorInfoMap.get(char as Operators)!.priority >
+            operatorInfoMap.get(topOperator as Operators)!.priority
         ) {
           operatorList.push(char);
           break;
@@ -81,7 +105,7 @@ function compute(rpnList: string[]): number {
       const right = tempArr.pop();
       const left = tempArr.pop();
 
-      tempArr.push(operatorFuncMap.get(char)!(left!, right!));
+      tempArr.push(operatorInfoMap.get(char as Operators)!.func(left!, right!));
     }
   }
 
