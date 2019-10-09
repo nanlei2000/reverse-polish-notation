@@ -43,7 +43,7 @@ const operatorInfoMap = new Map<Operators, OperatorInfo>([
  * 5 + ((1 + 2) * 4) - 3
  * 5 1 2 + 4 * + 3 -
  */
-function convert(str: string): string[] {
+function convert(str: string[]): string[] {
   if (!str) {
     return [];
   }
@@ -112,7 +112,10 @@ function compute(rpnList: string[]): number {
   return Number(tempArr[0].toFixed(3));
 }
 // test
-const rpnList = convert('5 + ((1 + 2) * 4) - 3');
-console.log('🤓🤔😓: rpnList', rpnList);
+const input = '5 + ( ( 1 + 2 ) * 4 ) - 17';
+console.log('→: input', input);
+const inputList = input.split(' ').filter(v => Boolean(v));
+const rpnList = convert(inputList);
+console.log('→: rpnList', rpnList.join(' '));
 const res = compute(rpnList);
-console.log('🤓🤔😓: res', res);
+console.log('→: res', res);
